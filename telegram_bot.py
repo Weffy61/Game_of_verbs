@@ -54,7 +54,7 @@ def handle_error(exception):
     logger.exception(f'Бот завершил работу с ошибкой: {exception}', exc_info=True)
     logger.info('Бот будет перезапущен через 30 минут')
     time.sleep(1800)
-    logger.info('Бот запущен')
+    logger.info('Бот game of verbs запущен в telegram')
 
 
 def greet(update: Update, context: CallbackContext) -> None:
@@ -82,7 +82,7 @@ def main() -> None:
         chat_id=chat_id
     )
     logger.addHandler(telegram_logs_handler)
-    logger.info('Бот запущен')
+    logger.info('Бот game of verbs запущен в telegram')
     while True:
         try:
             UPDATER.start_polling()
