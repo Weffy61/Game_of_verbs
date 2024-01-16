@@ -9,11 +9,6 @@ from notifications import TelegramLogsHandler, handle_error, detect_intent_texts
 
 logger = logging.getLogger('Telegram logger')
 
-env = Env()
-env.read_env()
-UPDATER = Updater(env.str('TELEGRAM_BOT_API'))
-DIALOGFLOW_PROJECT_ID = env.str('DIALOGFLOW_PROJECT_ID')
-
 
 def start(update: Update, context: CallbackContext) -> None:
     user = update.effective_user
@@ -28,9 +23,10 @@ def help_command(update: Update, context: CallbackContext) -> None:
 
 
 def greet(update: Update, context: CallbackContext) -> None:
+    dialogflow_project_id = context.bot_data.get('dialogflow_project_id'),
     try:
         update.message.reply_text(detect_intent_texts(
-            DIALOGFLOW_PROJECT_ID,
+            dialogflow_project_id[0],
             update.effective_user.id,
             update.message.text,
             'ru-RU',
@@ -40,9 +36,14 @@ def greet(update: Update, context: CallbackContext) -> None:
 
 
 def main() -> None:
-    dispatcher = UPDATER.dispatcher
+    env = Env()
+    env.read_env()
+    updater = Updater(env.str('TELEGRAM_BOT_API'))
+    dialogflow_project_id = env.str('DIALOGFLOW_PROJECT_ID')
+    dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help_command))
+    dispatcher.bot_data['dialogflow_project_id'] = dialogflow_project_id
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, greet))
     telegram_logs_token = env.str('TELEGRAM_LOGS_TOKEN')
     chat_id = env.int('TELEGRAM_CHAT_ID')
@@ -56,8 +57,8 @@ def main() -> None:
     logger.info('Бот game of verbs запущен в telegram')
     while True:
         try:
-            UPDATER.start_polling()
-            UPDATER.idle()
+            updater.start_polling()
+            updater.idle()
         except Exception as e:
             handle_error(e)
             continue
