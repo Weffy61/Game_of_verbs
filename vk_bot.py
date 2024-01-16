@@ -1,26 +1,14 @@
 import logging
 import random
-import time
 
 from environs import Env
-from google.cloud import dialogflow
 import telegram
 import vk_api as vk
 from vk_api.longpoll import VkLongPoll, VkEventType
 
+from notifications import TelegramLogsHandler, handle_error, detect_intent_texts
+
 logger = logging.getLogger('Telegram logger')
-
-
-class TelegramLogsHandler(logging.Handler):
-
-    def __init__(self, tg_bot, chat_id):
-        super().__init__()
-        self.chat_id = chat_id
-        self.tg_bot = tg_bot
-
-    def emit(self, record):
-        log_entry = self.format(record)
-        self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
 
 
 def reply_message(event, vk_api, answer):
@@ -32,25 +20,6 @@ def reply_message(event, vk_api, answer):
         )
     except Exception as e:
         handle_error(e)
-
-
-def handle_error(exception):
-    logger.exception(f'Бот завершил работу с ошибкой: {exception}', exc_info=True)
-    logger.info('Бот будет перезапущен через 30 минут')
-    time.sleep(1800)
-    logger.info('Бот game of verbs запущен в vk')
-
-
-def detect_intent_texts(project_id, session_id, texts, language_code):
-    session_client = dialogflow.SessionsClient()
-    session = session_client.session_path(project_id, session_id)
-    text_input = dialogflow.TextInput(text=texts, language_code=language_code)
-    query_input = dialogflow.QueryInput(text=text_input)
-    response = session_client.detect_intent(
-        request={"session": session, "query_input": query_input}
-    )
-    if not response.query_result.intent.is_fallback:
-        return response.query_result.fulfillment_text
 
 
 if __name__ == "__main__":
@@ -80,7 +49,8 @@ if __name__ == "__main__":
                         project_id,
                         event.user_id,
                         event.text,
-                        'ru-RU'
+                        'ru-RU',
+                        'vk'
                     )
                     if answer:
                         reply_message(event, vk_api, answer)

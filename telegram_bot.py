@@ -1,11 +1,11 @@
 import logging
-import time
 
 from environs import Env
-from google.cloud import dialogflow
 import telegram
 from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+
+from notifications import TelegramLogsHandler, handle_error, detect_intent_texts
 
 logger = logging.getLogger('Telegram logger')
 
@@ -13,29 +13,6 @@ env = Env()
 env.read_env()
 UPDATER = Updater(env.str('TELEGRAM_BOT_API'))
 DIALOGFLOW_PROJECT_ID = env.str('DIALOGFLOW_PROJECT_ID')
-
-
-class TelegramLogsHandler(logging.Handler):
-
-    def __init__(self, tg_bot, chat_id):
-        super().__init__()
-        self.chat_id = chat_id
-        self.tg_bot = tg_bot
-
-    def emit(self, record):
-        log_entry = self.format(record)
-        self.tg_bot.send_message(chat_id=self.chat_id, text=log_entry)
-
-
-def detect_intent_texts(project_id, session_id, texts, language_code):
-    session_client = dialogflow.SessionsClient()
-    session = session_client.session_path(project_id, session_id)
-    text_input = dialogflow.TextInput(text=texts, language_code=language_code)
-    query_input = dialogflow.QueryInput(text=text_input)
-    response = session_client.detect_intent(
-        request={"session": session, "query_input": query_input}
-    )
-    return response.query_result.fulfillment_text
 
 
 def start(update: Update, context: CallbackContext) -> None:
@@ -50,20 +27,14 @@ def help_command(update: Update, context: CallbackContext) -> None:
     update.message.reply_text('Данный бот написан в рамках учебного проекта devman.org')
 
 
-def handle_error(exception):
-    logger.exception(f'Бот завершил работу с ошибкой: {exception}', exc_info=True)
-    logger.info('Бот будет перезапущен через 30 минут')
-    time.sleep(1800)
-    logger.info('Бот game of verbs запущен в telegram')
-
-
 def greet(update: Update, context: CallbackContext) -> None:
     try:
         update.message.reply_text(detect_intent_texts(
             DIALOGFLOW_PROJECT_ID,
             update.effective_user.id,
             update.message.text,
-            'ru-RU'))
+            'ru-RU',
+            'tg'))
     except Exception as e:
         handle_error(e)
 
