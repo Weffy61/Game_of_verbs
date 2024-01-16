@@ -1,8 +1,19 @@
+import argparse
 import json
 import time
 
 from environs import Env
 from google.cloud import dialogflow
+
+
+def parse_training_file():
+    path = argparse.ArgumentParser(
+        description='Загрузка тренировочных фраз'
+    )
+    path.add_argument('file', help='file path', type=str, default='questions.json')
+
+    path_args = path.parse_args()
+    return path_args.file
 
 
 def create_intent(project_id, display_name, training_phrases_parts, message_texts):
@@ -30,10 +41,11 @@ def create_intent(project_id, display_name, training_phrases_parts, message_text
 
 
 def main():
+    file_path = parse_training_file()
     env = Env()
     env.read_env()
     project_id = env.str('DIALOGFLOW_PROJECT_ID')
-    with open('questions.json', 'r') as file:
+    with open(file_path, 'r') as file:
         questions = json.load(file)
     for question in questions:
         try:

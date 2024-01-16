@@ -61,8 +61,25 @@ pip install -r requirements.txt
 Запустите скрипт:
 
 ```commandline
+python3 create_intent.py file
+```
+Аргумент:
+file - путь к вашему файлу
+
+Например:
+
+```commandline
+python3 create_intent.py test_file.json
+```
+
+Данный пример запустит обучение на основании файла `test_file.json`.
+Также вы можете запустить скрипт без аргументов в ознакомитеном варианте:
+
+```commandline
 python3 create_intent.py
 ```
+
+Скрипт запустится с ознакомительным файлом questions.json.
 
 ## Запуск телеграм бота
 
