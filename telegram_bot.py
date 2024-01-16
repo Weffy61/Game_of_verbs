@@ -22,7 +22,7 @@ def help_command(update: Update, context: CallbackContext) -> None:
     update.message.reply_text('Данный бот написан в рамках учебного проекта devman.org')
 
 
-def greet(update: Update, context: CallbackContext) -> None:
+def reply_message(update: Update, context: CallbackContext) -> None:
     dialogflow_project_id = context.bot_data.get('dialogflow_project_id'),
     try:
         update.message.reply_text(detect_intent_texts(
@@ -44,7 +44,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", help_command))
     dispatcher.bot_data['dialogflow_project_id'] = dialogflow_project_id
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, greet))
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, reply_message))
     telegram_logs_token = env.str('TELEGRAM_LOGS_TOKEN')
     chat_id = env.int('TELEGRAM_CHAT_ID')
     tg_bot_logs = telegram.Bot(token=telegram_logs_token)
