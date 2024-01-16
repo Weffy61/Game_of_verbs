@@ -47,13 +47,14 @@ def main():
     project_id = env.str('DIALOGFLOW_PROJECT_ID')
     with open(file_path, 'r') as file:
         questions = json.load(file)
-    for question in questions:
+
+    for title, question in questions.items():
         try:
             create_intent(
                 project_id=project_id,
-                display_name=question,
-                training_phrases_parts=questions.get(question)['questions'],
-                message_texts=[questions.get(question)['answer']]
+                display_name=title,
+                training_phrases_parts=question.get('questions'),
+                message_texts=[question.get('answer')]
             )
             time.sleep(1)
         except Exception as ex:
