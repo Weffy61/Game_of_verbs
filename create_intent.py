@@ -10,7 +10,7 @@ def parse_training_file():
     path = argparse.ArgumentParser(
         description='Загрузка тренировочных фраз'
     )
-    path.add_argument('file', help='file path', type=str, default='questions.json')
+    path.add_argument('file', help='file path', nargs='?', type=str, default='questions.json')
 
     path_args = path.parse_args()
     return path_args.file
