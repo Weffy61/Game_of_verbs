@@ -46,11 +46,10 @@ if __name__ == "__main__":
                         project_id,
                         event.user_id,
                         event.text,
-                        'ru-RU',
-                        'vk'
+                        'ru-RU'
                     )
-                    if answer:
-                        reply_message(event, vk_api, answer)
+                    if not answer.query_result.intent.is_fallback:
+                        reply_message(event, vk_api, answer.query_result.fulfillment_text)
         except Exception as e:
             handle_error(e)
             continue

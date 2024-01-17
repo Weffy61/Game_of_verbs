@@ -25,12 +25,12 @@ def help_command(update: Update, context: CallbackContext) -> None:
 def reply_message(update: Update, context: CallbackContext) -> None:
     dialogflow_project_id = context.bot_data.get('dialogflow_project_id'),
     try:
-        update.message.reply_text(detect_intent_texts(
-            dialogflow_project_id[0],
-            update.effective_user.id,
-            update.message.text,
-            'ru-RU',
-            'tg'))
+        message = detect_intent_texts(
+                dialogflow_project_id[0],
+                update.effective_user.id,
+                update.message.text,
+                'ru-RU')
+        update.message.reply_text(message.query_result.fulfillment_text)
     except Exception as e:
         handle_error(e)
 
