@@ -6,7 +6,9 @@ import telegram
 import vk_api as vk
 from vk_api.longpoll import VkLongPoll, VkEventType
 
-from notifications import TelegramLogsHandler, handle_error, detect_intent_texts
+from dialflow_response import detect_intent_texts
+from notifications import TelegramLogsHandler, handle_error
+
 
 logger = logging.getLogger('Telegram logger')
 

@@ -5,7 +5,8 @@ import telegram
 from telegram import Update, ForceReply
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
 
-from notifications import TelegramLogsHandler, handle_error, detect_intent_texts
+from dialflow_response import detect_intent_texts
+from notifications import TelegramLogsHandler, handle_error
 
 logger = logging.getLogger('Telegram logger')
 
