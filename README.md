@@ -26,8 +26,7 @@ pip install -r requirements.txt
 
 ### Подготовка vk
 
-Создайте группу в [vk](vk.com), получите [API для сообщений сообществ]
-(https://dev.vk.com/ru/api/community-messages/getting-started?ref=old_portal), установите права доступа для сообщений 
+Создайте группу в [vk](vk.com), получите [API для сообщений сообществ](https://dev.vk.com/ru/api/community-messages/getting-started?ref=old_portal), установите права доступа для сообщений 
 сообщества. Включите сообщения сообщества в настройках группы.
 
 ### Подготовка telegram
